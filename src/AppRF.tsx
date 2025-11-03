@@ -50,10 +50,10 @@ export default function App() {
   socket.emit('become_online', user._id);
 
   socket.on('new_group', (newGroup: Chat) => {
-    setGroups(groups => {
+    setGroups((groups) => {
       return [...groups, newGroup];
-    })
-  })
+    });
+  });
 
   function setNewRoom(newRoom: string) {
     if (room) {

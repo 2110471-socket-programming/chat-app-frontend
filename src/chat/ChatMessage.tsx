@@ -28,9 +28,9 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
     socket.on('receive-message', (newMessage: ChatHistory) => {
       setMessages((messages) => {
         return [...messages, newMessage];
-      })
-    })
-  }, [])
+      });
+    });
+  }, []);
 
   function sendNewMessage(content: string) {
     const newMessage: ChatHistory = {
@@ -39,19 +39,19 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
       type: 'text',
       content: content,
       date: new Date(),
-    }
+    };
 
     socket.emit('send_message', newMessage, chatId);
-    
+
     setMessages((messages) => {
       return [...messages, newMessage];
-    })
+    });
   }
 
   return (
     <>
       <div className="flex-1 overflow-y-auto mb-3 bg-white rounded-lg shadow-inner p-4 space-y-3">
-        {isLoading ? ( 
+        {isLoading ? (
           <h1>Loading...</h1>
         ) : (
           messages.map((msg, i) => (
@@ -69,7 +69,9 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
                 }`}
               >
                 <p className="text-xs opacity-70">{msg.senderName}</p>
-                {msg.type === 'text' && <p className="text-sm">{msg.content}</p>}
+                {msg.type === 'text' && (
+                  <p className="text-sm">{msg.content}</p>
+                )}
               </motion.div>
             </div>
           ))

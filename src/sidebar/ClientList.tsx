@@ -33,8 +33,8 @@ export default function ClientList({
   useEffect(() => {
     socket.on('online_clients', (clientsId: string[]) => {
       setOnlineClientsId(clientsId);
-    })
-  }, [])
+    });
+  }, []);
 
   const onlineClients = clients.filter((c) => onlineClientsId.includes(c._id));
   const offlineClients = clients.filter(
@@ -58,19 +58,26 @@ export default function ClientList({
 
   return (
     <div>
-      <h2 className="font-semibold mb-2">Online ({onlineClients.length-1})</h2>
-      {onlineClients.map((c) => (
-        c._id !== user._id && (
-          <div
-            key={c._id}
-            className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
-            onClick={() => handleClientClick(c._id)}
-          >
-            <img src={c.profileUrl} alt="pfp" className="w-8 h-8 rounded-full" />
-            <span>{c.name}</span>
-          </div>
-        )
-      ))}
+      <h2 className="font-semibold mb-2">
+        Online ({onlineClients.length - 1})
+      </h2>
+      {onlineClients.map(
+        (c) =>
+          c._id !== user._id && (
+            <div
+              key={c._id}
+              className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md cursor-pointer"
+              onClick={() => handleClientClick(c._id)}
+            >
+              <img
+                src={c.profileUrl}
+                alt="pfp"
+                className="w-8 h-8 rounded-full"
+              />
+              <span>{c.name}</span>
+            </div>
+          ),
+      )}
 
       <br />
 

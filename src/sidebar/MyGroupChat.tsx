@@ -31,9 +31,7 @@ export default function MyGroupChat({
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="font-semibold">
-          My Group Chat ({myGroupChats.length})
-        </h2>
+        <h2 className="font-semibold">My Group Chat ({myGroupChats.length})</h2>
         <button className="text-2xl cursor-pointer hover:text-gray-600">
           +
         </button>
