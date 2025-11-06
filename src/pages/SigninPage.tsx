@@ -1,40 +1,38 @@
-import { useState } from "react";
-import { type UserRequest, signin } from "../api/user";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../App";
-import { useUser } from "../context/UserContext";
+import { useState } from 'react';
+import { type UserRequest, signin } from '../api/user';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
+
 function Signin() {
-    const { setUser } = useUser();
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
   const mutation = useMutation({
     mutationFn: (userData: UserRequest) => signin(userData),
     onSuccess: (data) => {
       alert(`Welcome back, ${data.name}!`);
-    setUser({ _id: data._id, name: data.name, profileUrl: data.profileUrl }); // ✅ store in context
-      navigate("/profile"); // redirect after signin
+      setUser({ _id: data._id, name: data.name, profileUrl: data.profileUrl }); // ✅ store in context
+      navigate('/chat'); // redirect after signin
     },
     onError: (error: any) => {
       const message =
-        error.response?.data?.message || error.message || "Signin failed";
+        error.response?.data?.message || error.message || 'Signin failed';
       alert(`Signin failed: ${message}`);
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const userData: UserRequest = { name, password, profileUrl: "" };
-    console.log("signin payload:", userData);
+    const userData: UserRequest = { name, password, profileUrl: '' };
+    console.log('signin payload:', userData);
     mutation.mutate(userData);
   };
 
   return (
-
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit}
@@ -83,11 +81,11 @@ function Signin() {
           disabled={mutation.isPending}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
-          {mutation.isPending ? "Signing in..." : "Sign In"}
+          {mutation.isPending ? 'Signing in...' : 'Sign In'}
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
+          Don’t have an account?{' '}
           <a
             href="/signup"
             className="text-blue-500 hover:text-blue-700 font-medium"

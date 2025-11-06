@@ -1,7 +1,7 @@
 import type { User } from '../interface/interface';
 import Axios from './Axios';
 
-export  interface UserResponse {
+export interface UserResponse {
   _id: string;
   name: string;
   profileUrl: string;
@@ -23,23 +23,20 @@ export const getOnlineClientsId = async (): Promise<string[]> => {
 };
 
 export const signup = async (userData: UserRequest): Promise<UserResponse> => {
- try{
-  const response = await Axios.post('http://localhost:3000/api/auth/signup', userData);
-  return response.data;
- }
- catch(error){
-  console.log(error)
-  throw error;
-
- }
-}
+  try {
+    const response = await Axios.post('/api/auth/signup', userData);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 export const signin = async (userData: UserRequest): Promise<UserResponse> => {
-  const response = await Axios.post('http://localhost:3000/api/auth/signin', userData);
+  const response = await Axios.post('/api/auth/signin', userData);
   return response.data;
-}
+};
 
 export const signout = async (): Promise<void> => {
-  await Axios.post('http://localhost:3000/api/auth/signout');
-}
-
+  await Axios.post('/api/auth/signout');
+};

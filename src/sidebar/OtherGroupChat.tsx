@@ -7,7 +7,7 @@ type MyGroupChatType = {
 };
 
 export default function OtherGroupChat({ groups, setGroups }: MyGroupChatType) {
-  const user = useUser();
+  const { user } = useUser();
 
   const otherGroupChats = groups.filter((g) => !g.membersId.includes(user._id));
 

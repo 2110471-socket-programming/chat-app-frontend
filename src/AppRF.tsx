@@ -32,7 +32,7 @@ import { getGroupChats } from './api/chat';
 // ];
 
 export default function App() {
-  const user = useUser();
+  const { user } = useUser();
   const [clients, setClients] = useState<User[]>([]);
   const [room, setRoom] = useState<string | null>(null);
   const [groups, setGroups] = useState<Chat[]>([]);
@@ -46,8 +46,6 @@ export default function App() {
       setSidebarIsLoading(false);
     })();
   }, []);
-
-  socket.emit('become_online', user._id);
 
   socket.on('new_group', (newGroup: Chat) => {
     setGroups((groups) => {

@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { signout } from "../api/user";
-import { useUser } from "../context/UserContext";
-import { MessageSquare, LogOut, Home } from "lucide-react";
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { signout } from '../api/user';
+import { useUser } from '../context/UserContext';
+import { MessageSquare, LogOut, Home } from 'lucide-react';
 
 function Header() {
   const navigate = useNavigate();
@@ -12,13 +12,13 @@ function Header() {
     mutationFn: signout,
     onSuccess: () => {
       setUser(null);
-      localStorage.removeItem("user");
-      navigate("/signin");
+      localStorage.removeItem('user');
+      navigate('/signin');
     },
     onError: (err) => {
-      console.error("Sign out failed:", err);
-      alert("Sign out failed, please try again.");
-      navigate("/");
+      console.error('Sign out failed:', err);
+      alert('Sign out failed, please try again.');
+      navigate('/');
     },
   });
 
@@ -31,7 +31,7 @@ function Header() {
       {/* Logo / Home */}
       <div
         className="flex items-center gap-2 cursor-pointer hover:text-blue-200 transition"
-        onClick={() => navigate("/")}
+        onClick={() => navigate('/')}
       >
         <Home className="w-6 h-6" />
         <h1 className="text-xl font-bold">Chat App</h1>
@@ -40,7 +40,7 @@ function Header() {
       {/* Right-side buttons */}
       <div className="flex gap-4 items-center">
         <button
-          onClick={() => navigate("/chat")}
+          onClick={() => navigate('/chat')}
           className="flex items-center gap-2 px-4 py-2 bg-blue-400 hover:bg-blue-300 text-white rounded-lg transition"
         >
           <MessageSquare className="w-5 h-5" />
@@ -53,7 +53,7 @@ function Header() {
           className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-400 rounded-lg transition disabled:opacity-70"
         >
           <LogOut className="w-5 h-5" />
-          {signoutMutation.isPending ? "Signing out..." : "Sign Out"}
+          {signoutMutation.isPending ? 'Signing out...' : 'Sign Out'}
         </button>
       </div>
     </header>

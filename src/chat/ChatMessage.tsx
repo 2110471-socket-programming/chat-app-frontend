@@ -14,7 +14,7 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
   const [messages, setMessages] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const user = useUser();
+  const { user } = useUser();
 
   useEffect(() => {
     setIsLoading(true);
@@ -25,7 +25,7 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
   }, [chatId]);
 
   useEffect(() => {
-    socket.on('receive-message', (newMessage: ChatHistory) => {
+    socket.on('receive_message', (newMessage: ChatHistory) => {
       setMessages((messages) => {
         return [...messages, newMessage];
       });
