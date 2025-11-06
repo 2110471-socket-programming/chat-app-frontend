@@ -22,17 +22,21 @@ export default function App() {
   useEffect(() => {
     socket.emit('become_online', user._id);
 
-    socket.on('new_group', (newGroup: Chat) => {
-      setGroups((groups) => {
-        return [...groups, newGroup];
-      });
-    });
+    const handleNewGroup = (newGroup: Chat) => {
+      setGroups((groups) => [...groups, newGroup]);
+    };
+
+    socket.on('new_group', handleNewGroup);
 
     (async () => {
       setClients(await getClients());
       setGroups(await getGroupChats());
       setSidebarIsLoading(false);
     })();
+
+    return () => {
+      socket.off('new_group', handleNewGroup);
+    };
   }, []);
 
   function setNewRoom(newRoom: string) {
