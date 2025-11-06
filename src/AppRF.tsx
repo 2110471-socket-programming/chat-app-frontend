@@ -62,7 +62,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 text-gray-900">
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50 text-gray-900 overflow-hidden">
       <aside className="w-full md:w-1/4 bg-white border-r border-gray-200 p-4 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <img
@@ -91,7 +91,7 @@ export default function App() {
         )}
       </aside>
 
-      <main className="flex-1 flex flex-col p-4">
+      <main className="flex-1 flex flex-col p-4 overflow-y-auto">
         {selectedChat ? (
           <>
             <ChatHeader selectedChat={selectedChat} clients={clients} />

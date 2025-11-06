@@ -32,11 +32,11 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
     });
   }, []);
 
-  function sendNewMessage(content: string) {
+  function sendNewMessage(type: 'text' | 'image', content: string) {
     const newMessage: ChatHistory = {
       senderId: user._id,
       senderName: user.name,
-      type: 'text',
+      type: type,
       content: content,
       date: new Date(),
     };
@@ -50,7 +50,7 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
 
   return (
     <>
-      <div className="flex-1 overflow-y-auto mb-3 bg-white rounded-lg shadow-inner p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto mb-3 bg-white rounded-lg shadow-inner p-4 space-y-3 h-screen">
         {isLoading ? (
           <h1>Loading...</h1>
         ) : (
@@ -68,19 +68,23 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
                     : 'bg-gray-200'
                 }`}
               >
-                <p className="text-xs opacity-70">{msg.senderName}</p>
-                {msg.type === 'text' && (
+                <p className="text-xs opacity-70">
+                  {msg.senderId !== user._id && msg.senderName}
+                </p>
+                {msg.type === 'text' ? (
                   <p className="text-sm">{msg.content}</p>
+                ) : (
+                  <img
+                    src={msg.content}
+                    className="w-[150px] h-[112px] object-cover rounded-md"
+                  />
                 )}
               </motion.div>
             </div>
           ))
         )}
       </div>
-      <MessageSendBox
-        handleFileChange={() => {}}
-        sendNewMessage={sendNewMessage}
-      />
+      <MessageSendBox sendNewMessage={sendNewMessage} />
     </>
   );
 }
