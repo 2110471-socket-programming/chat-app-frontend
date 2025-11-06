@@ -21,18 +21,19 @@ export default function App() {
 
   useEffect(() => {
     socket.emit('become_online', user._id);
+
+    socket.on('new_group', (newGroup: Chat) => {
+      setGroups((groups) => {
+        return [...groups, newGroup];
+      });
+    });
+
     (async () => {
       setClients(await getClients());
       setGroups(await getGroupChats());
       setSidebarIsLoading(false);
     })();
   }, []);
-
-  socket.on('new_group', (newGroup: Chat) => {
-    setGroups((groups) => {
-      return [...groups, newGroup];
-    });
-  });
 
   function setNewRoom(newRoom: string) {
     if (room) {
@@ -43,10 +44,13 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 text-gray-900">
+    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden">
       <Header />
-      <div className="flex flex-1">
-        <aside className="w-full md:w-1/4 bg-white border-r border-gray-200 p-4 flex flex-col gap-4">
+      <div className="flex flex-col sm:flex-row flex-1 overflow-hidden">
+        <aside
+          className="w-full sm:w-70 md:w-80 lg:w-1/4 bg-white border-r 
+          border-gray-200 p-4 flex flex-col gap-4 overflow-y-auto"
+        >
           <div className="flex items-center gap-3">
             <img
               src={user.profileUrl}
@@ -74,7 +78,7 @@ export default function App() {
           )}
         </aside>
 
-        <main className="flex-1 flex flex-col p-4">
+        <main className="flex-1 flex flex-col p-4 overflow-hidden">
           {selectedChat ? (
             <>
               <ChatHeader selectedChat={selectedChat} clients={clients} />

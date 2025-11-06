@@ -11,7 +11,7 @@ function Header() {
   const signoutMutation = useMutation({
     mutationFn: signout,
     onSuccess: () => {
-      setUser(null);
+      setUser({ _id: '', name: '', profileUrl: '' });
       localStorage.removeItem('user');
       navigate('/signin');
     },

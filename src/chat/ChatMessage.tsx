@@ -25,11 +25,15 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
   }, [chatId]);
 
   useEffect(() => {
-    socket.on('receive_message', (newMessage: ChatHistory) => {
-      setMessages((messages) => {
-        return [...messages, newMessage];
-      });
-    });
+    const handleReceiveMessage = (newMessage: ChatHistory) => {
+      setMessages((messages) => [...messages, newMessage]);
+    };
+
+    socket.on('receive_message', handleReceiveMessage);
+
+    return () => {
+      socket.off('receive_message', handleReceiveMessage);
+    };
   }, []);
 
   function sendNewMessage(type: 'text' | 'image', content: string) {
