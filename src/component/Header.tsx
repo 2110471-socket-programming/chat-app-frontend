@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { signout } from '../api/user';
 import { useUser } from '../context/UserContext';
 import { MessageSquare, LogOut, Home } from 'lucide-react';
+import { socket } from '../config/config';
 
 function Header() {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ function Header() {
     onSuccess: () => {
       setUser({ _id: '', name: '', profileUrl: '' });
       localStorage.removeItem('user');
+      socket.emit('become_offline');
       navigate('/signin');
     },
     onError: (err) => {

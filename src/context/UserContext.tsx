@@ -15,9 +15,9 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 const defaultUser: User = {
-  _id: '690654db5ceef4469c1f1bee',
-  name: 'Dan',
-  profileUrl: 'https://i.pravatar.cc/100?img=7',
+  _id: '',
+  name: '',
+  profileUrl: '',
 };
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {

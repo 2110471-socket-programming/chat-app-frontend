@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type UserRequest, signin } from '../api/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 
 function Signin() {
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user._id !== '') {
+      window.location.href = '/';
+    }
+  }, []);
 
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +22,7 @@ function Signin() {
     onSuccess: (data) => {
       alert(`Welcome back, ${data.name}!`);
       setUser({ _id: data._id, name: data.name, profileUrl: data.profileUrl }); // ✅ store in context
-      navigate('/chat'); // redirect after signin
+      navigate('/'); // redirect after signin
     },
     onError: (error: any) => {
       const message =

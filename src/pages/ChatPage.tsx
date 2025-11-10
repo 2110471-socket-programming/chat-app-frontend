@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Chat, User } from '../interface/interface';
 import { useUser } from '../context/UserContext';
 import ClientList from '../sidebar/ClientList';
@@ -19,14 +20,47 @@ export default function App() {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
   const [sidebarIsLoading, setSidebarIsLoading] = useState<boolean>(true);
 
+  const navigate = useNavigate();
+
+  const handleNewGroup = (newGroup: Chat) => {
+    setGroups((groups) => [...groups, newGroup]);
+  };
+
+  const handleLeaveGroup = (groupId: string, userId: string) => {
+    const updatedGroups = groups.map((group) =>
+      group._id === groupId
+        ? {
+            ...group,
+            membersId: group.membersId.filter((id) => id !== userId),
+          }
+        : group,
+    );
+    setGroups(updatedGroups);
+  };
+
+  const handleJoinGroup = (groupId: string, userId: string) => {
+    const updatedGroups = groups.map((group) =>
+      group._id === groupId
+        ? { ...group, membersId: [...group.membersId, userId] }
+        : group,
+    );
+    setGroups(updatedGroups);
+  };
+
+  const handleNewUser = (newUser: User) => {
+    setClients((clients) => [...clients, newUser]);
+  };
+
   useEffect(() => {
+    if (user._id === '') {
+      navigate('/signin');
+    }
+
     socket.emit('become_online', user._id);
-
-    const handleNewGroup = (newGroup: Chat) => {
-      setGroups((groups) => [...groups, newGroup]);
-    };
-
     socket.on('new_group', handleNewGroup);
+    socket.on('join_group', handleJoinGroup);
+    socket.on('leave_group', handleLeaveGroup);
+    socket.on('new_user', handleNewUser);
 
     (async () => {
       setClients(await getClients());
@@ -36,6 +70,9 @@ export default function App() {
 
     return () => {
       socket.off('new_group', handleNewGroup);
+      socket.off('join_group', handleJoinGroup);
+      socket.off('leave_group', handleLeaveGroup);
+      socket.off('new_user', handleNewUser);
     };
   }, []);
 

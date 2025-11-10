@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type UserRequest, signup } from '../api/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -6,11 +6,17 @@ import { useUser } from '../context/UserContext';
 import { socket } from '../config/config';
 
 function Signup() {
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [profileUrl, setProfileUrl] = useState('');
+
+  useEffect(() => {
+    if (user._id !== '') {
+      window.location.href = '/';
+    }
+  }, []);
 
   const mutation = useMutation({
     mutationFn: (userData: UserRequest) => signup(userData),
@@ -22,8 +28,8 @@ function Signup() {
         profileUrl: data.profileUrl,
       };
       setUser(newUser); // ✅ store in context
-      socket.emit('create_user', newUser);
-      navigate('/chat'); // ✅ usually go to sign-in after signup
+      // socket.emit('create_user', newUser);
+      navigate('/'); // ✅ usually go to sign-in after signup
     },
     onError: (error: any) => {
       // Axios errors often have response.data.message

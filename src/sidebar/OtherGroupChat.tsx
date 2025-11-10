@@ -1,3 +1,4 @@
+import { joinGroup } from '../api/group';
 import { useUser } from '../context/UserContext';
 import type { Chat } from '../interface/interface';
 
@@ -11,13 +12,14 @@ export default function OtherGroupChat({ groups, setGroups }: MyGroupChatType) {
 
   const otherGroupChats = groups.filter((g) => !g.membersId.includes(user._id));
 
-  const handleJoinGroup = (groupId: string) => {
+  const handleJoinGroup = async (groupId: string) => {
     const updatedGroups = groups.map((group) =>
       group._id === groupId
         ? { ...group, membersId: [...group.membersId, user._id] }
         : group,
     );
     setGroups(updatedGroups);
+    await joinGroup(groupId, user._id);
   };
 
   return (

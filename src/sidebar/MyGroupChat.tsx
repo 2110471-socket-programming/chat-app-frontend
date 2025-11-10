@@ -1,3 +1,4 @@
+import { leaveGroup } from '../api/group';
 import { useUser } from '../context/UserContext';
 import type { Chat } from '../interface/interface';
 
@@ -16,7 +17,7 @@ export default function MyGroupChat({
 
   const myGroupChats = groups.filter((g) => g.membersId.includes(user._id));
 
-  const handleLeaveGroup = (groupId: string) => {
+  const handleLeaveGroup = async (groupId: string) => {
     const updatedGroups = groups.map((group) =>
       group._id === groupId
         ? {
@@ -26,6 +27,7 @@ export default function MyGroupChat({
         : group,
     );
     setGroups(updatedGroups);
+    await leaveGroup(groupId, user._id);
   };
 
   return (
