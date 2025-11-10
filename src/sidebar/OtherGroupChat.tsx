@@ -7,20 +7,10 @@ type MyGroupChatType = {
   setGroups: (groups: Chat[]) => void;
 };
 
-export default function OtherGroupChat({ groups, setGroups }: MyGroupChatType) {
+export default function OtherGroupChat({ groups }: MyGroupChatType) {
   const { user } = useUser();
 
   const otherGroupChats = groups.filter((g) => !g.membersId.includes(user._id));
-
-  const handleJoinGroup = async (groupId: string) => {
-    const updatedGroups = groups.map((group) =>
-      group._id === groupId
-        ? { ...group, membersId: [...group.membersId, user._id] }
-        : group,
-    );
-    setGroups(updatedGroups);
-    await joinGroup(groupId, user._id);
-  };
 
   return (
     <div>
@@ -34,7 +24,7 @@ export default function OtherGroupChat({ groups, setGroups }: MyGroupChatType) {
         >
           <span>{g.name}</span>
           <button
-            onClick={() => handleJoinGroup(g._id)}
+            onClick={async () => await joinGroup(g._id, user._id)}
             className="text-blue-500 text-sm cursor-pointer"
           >
             Join

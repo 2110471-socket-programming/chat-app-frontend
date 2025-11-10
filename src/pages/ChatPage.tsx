@@ -26,25 +26,32 @@ export default function App() {
     setGroups((groups) => [...groups, newGroup]);
   };
 
-  const handleLeaveGroup = (groupId: string, userId: string) => {
-    const updatedGroups = groups.map((group) =>
-      group._id === groupId
-        ? {
-            ...group,
-            membersId: group.membersId.filter((id) => id !== userId),
-          }
-        : group,
+  const updateGroupMembers = (
+    groupId: string,
+    updateFn: (membersId: string[]) => string[],
+  ) => {
+    setGroups((prevGroups) =>
+      prevGroups.map((group) =>
+        group._id === groupId
+          ? { ...group, membersId: updateFn(group.membersId) }
+          : group,
+      ),
     );
-    setGroups(updatedGroups);
+    setSelectedChat((prevChat) =>
+      prevChat?._id === groupId
+        ? { ...prevChat, membersId: updateFn(prevChat.membersId) }
+        : prevChat,
+    );
+  };
+
+  const handleLeaveGroup = (groupId: string, userId: string) => {
+    updateGroupMembers(groupId, (members) =>
+      members.filter((id) => id !== userId),
+    );
   };
 
   const handleJoinGroup = (groupId: string, userId: string) => {
-    const updatedGroups = groups.map((group) =>
-      group._id === groupId
-        ? { ...group, membersId: [...group.membersId, userId] }
-        : group,
-    );
-    setGroups(updatedGroups);
+    updateGroupMembers(groupId, (members) => [...members, userId]);
   };
 
   const handleNewUser = (newUser: User) => {
@@ -112,7 +119,7 @@ export default function App() {
               <MyGroupChat
                 groups={groups}
                 setSelectedChat={setSelectedChat}
-                setGroups={setGroups}
+                setNewRoom={setNewRoom}
               />
               <OtherGroupChat groups={groups} setGroups={setGroups} />
             </>
@@ -123,7 +130,7 @@ export default function App() {
           {selectedChat ? (
             <>
               <ChatHeader selectedChat={selectedChat} clients={clients} />
-              <ChatMessage chatId={selectedChat._id} />
+              <ChatMessage chatId={selectedChat._id} type={selectedChat.type} />
             </>
           ) : (
             <div className="flex items-center justify-center flex-1 text-gray-400">

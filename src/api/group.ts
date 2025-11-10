@@ -1,8 +1,14 @@
 import type { Chat } from '../interface/interface';
 import Axios from './Axios';
 
-export const createGroup = async (userId: string): Promise<Chat> => {
-  const response = await Axios.post('/api/groups', { userId: userId });
+export const createGroup = async (
+  userId: string,
+  groupName: string,
+): Promise<Chat> => {
+  const response = await Axios.post('/api/groups', {
+    userId: userId,
+    groupName: groupName,
+  });
   return response.data;
 };
 
