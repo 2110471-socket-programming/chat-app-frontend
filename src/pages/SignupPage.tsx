@@ -4,13 +4,16 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import { socket } from '../config/config';
+import { uploadImage } from '../api/upload';
 
 function Signup() {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
-  const [profileUrl, setProfileUrl] = useState('');
+  const [profileFile, setProfileFile] = useState<File | null>(null);
+  const [profilePreview, setProfilePreview] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (user._id !== '') {
@@ -27,24 +30,45 @@ function Signup() {
         name: data.name,
         profileUrl: data.profileUrl,
       };
-      setUser(newUser); // ✅ store in context
-      // socket.emit('create_user', newUser);
-      navigate('/'); // ✅ usually go to sign-in after signup
+      setUser(newUser);
+      navigate('/');
     },
     onError: (error: any) => {
-      // Axios errors often have response.data.message
       const message =
         error.response?.data?.message || error.message || 'Signup failed';
       alert(`Signup failed: ${message}`);
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileFile(file);
+      const preview = URL.createObjectURL(file);
+      setProfilePreview(preview);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploading(true);
+
+    let profileUrl = '';
+    if (profileFile) {
+      try {
+        profileUrl = await uploadImage(profileFile);
+      } catch (error) {
+        alert('Failed to upload profile picture');
+        setIsUploading(false);
+        return;
+      }
+    }
+
     const userData: UserRequest = { name, password, profileUrl };
     console.log('signup payload:', userData);
 
     mutation.mutate(userData);
+    setIsUploading(false);
   };
 
   return (
@@ -54,6 +78,38 @@ function Signup() {
         className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Sign Up</h2>
+
+        <div className="mb-4 text-center">
+          <label
+            className="block text-gray-700 font-medium mb-3"
+            htmlFor="profilePicture"
+          >
+            Profile Picture
+          </label>
+          {profilePreview && (
+            <img
+              src={profilePreview}
+              alt="preview"
+              className="w-24 h-24 rounded-full mx-auto mb-3 object-cover border-2 border-blue-400"
+            />
+          )}
+          <input
+            id="profilePicture"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <label
+            htmlFor="profilePicture"
+            className="inline-block bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 cursor-pointer focus-within:ring-2 focus-within:ring-blue-400"
+          >
+            Choose File
+          </label>
+          {profileFile && (
+            <p className="mt-2 text-sm text-gray-600">{profileFile.name}</p>
+          )}
+        </div>
 
         <div className="mb-4">
           <label
@@ -89,29 +145,12 @@ function Signup() {
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 font-medium mb-2"
-            htmlFor="profileUrl"
-          >
-            Profile URL
-          </label>
-          <input
-            id="profileUrl"
-            type="url"
-            value={profileUrl}
-            onChange={(e) => setProfileUrl(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your profile URL"
-          />
-        </div>
-
         <button
           type="submit"
-          disabled={mutation.isPending}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          disabled={mutation.isPending || isUploading}
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-70"
         >
-          {mutation.isPending ? 'Signing in...' : 'Sign In'}
+          {mutation.isPending || isUploading ? 'Creating account...' : 'Sign Up'}
         </button>
       </form>
     </div>
