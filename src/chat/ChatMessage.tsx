@@ -15,6 +15,12 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { user } = useUser();
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -54,7 +60,7 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
 
   return (
     <>
-      <div className="flex-1 overflow-y-auto mb-3 bg-white rounded-lg shadow-inner p-4 space-y-3 h-screen">
+      <div className="flex-1 overflow-y-auto mb-3 bg-white rounded-lg shadow-inner p-4 space-y-3 h-screen ">
         {isLoading ? (
           <h1>Loading...</h1>
         ) : (
