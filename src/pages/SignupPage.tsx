@@ -3,8 +3,8 @@ import { type UserRequest, signup } from '../api/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { socket } from '../config/config';
 import { uploadImage } from '../api/upload';
+import userPlaceholder from '../assets/user.png';
 
 function Signup() {
   const { user, setUser } = useUser();
@@ -14,6 +14,9 @@ function Signup() {
   const [profileFile, setProfileFile] = useState<File | null>(null);
   const [profilePreview, setProfilePreview] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const placeholderSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24"><rect width="100%" height="100%" fill="#EFF6FF"/><circle cx="12" cy="8" r="4" fill="#BFDBFE"/><path d="M6 20c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="#60A5FA"/></svg>`;
+  // Use imported image so bundler resolves the file path correctly
+  const placeholder = userPlaceholder;
 
   useEffect(() => {
     if (user._id !== '') {
@@ -52,8 +55,8 @@ function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUploading(true);
-
-    let profileUrl = '';
+    // default to the placeholder image when the user didn't upload a file
+    let profileUrl = placeholder;
     if (profileFile) {
       try {
         profileUrl = await uploadImage(profileFile);
@@ -86,13 +89,15 @@ function Signup() {
           >
             Profile Picture
           </label>
-          {profilePreview && (
-            <img
-              src={profilePreview}
-              alt="preview"
-              className="w-24 h-24 rounded-full mx-auto mb-3 object-cover border-2 border-blue-400"
-            />
-          )}
+          <img
+            src={profilePreview || placeholder}
+            alt={profilePreview ? 'preview' : 'placeholder'}
+            className="w-24 h-24 rounded-full mx-auto mb-3 object-cover border-2 border-blue-400"
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              if (target.src !== placeholder) target.src = placeholder;
+            }}
+          />
           <input
             id="profilePicture"
             type="file"
