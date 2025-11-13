@@ -2,15 +2,19 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { ChatHistory } from '../interface/interface';
 import { useUser } from '../context/UserContext';
-import { getPrivateChatHistoryById } from '../api/chat';
+import {
+  getGroupChatHistoryById,
+  getPrivateChatHistoryById,
+} from '../api/chat';
 import MessageSendBox from './MessageSendBox';
 import { socket } from '../config/config';
 
 type ChatMessageType = {
   chatId: string;
+  type: 'private' | 'group';
 };
 
-export default function ChatMessage({ chatId }: ChatMessageType) {
+export default function ChatMessage({ chatId, type }: ChatMessageType) {
   const [messages, setMessages] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -25,7 +29,11 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
   useEffect(() => {
     setIsLoading(true);
     (async () => {
-      setMessages(await getPrivateChatHistoryById(chatId));
+      if (type === 'private') {
+        setMessages(await getPrivateChatHistoryById(chatId));
+      } else {
+        setMessages(await getGroupChatHistoryById(chatId));
+      }
       setIsLoading(false);
     })();
   }, [chatId]);
@@ -69,14 +77,14 @@ export default function ChatMessage({ chatId }: ChatMessageType) {
               key={i}
               className={`flex ${msg.senderName === user.name ? 'justify-end' : 'justify-start'}`}
             >
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-2 rounded-lg max-w-xs ${
-                  msg.senderName === user.name
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200'
-                }`}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-2 rounded-lg max-w-md break-words ${
+                msg.senderName === user.name
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-200'
+              }`}
               >
                 <p className="text-xs opacity-70">
                   {msg.senderId !== user._id && msg.senderName}

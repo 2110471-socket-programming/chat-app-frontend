@@ -1,38 +1,30 @@
+import { createGroup, leaveGroup } from '../api/group';
 import { useUser } from '../context/UserContext';
 import type { Chat } from '../interface/interface';
 
 type MyGroupChatType = {
   groups: Chat[];
   setSelectedChat: (groupChat: Chat) => void;
-  setGroups: (groups: Chat[]) => void;
+  setNewRoom: (room: string) => void;
 };
 
 export default function MyGroupChat({
   groups,
   setSelectedChat,
-  setGroups,
+  setNewRoom,
 }: MyGroupChatType) {
   const { user } = useUser();
 
   const myGroupChats = groups.filter((g) => g.membersId.includes(user._id));
 
-  const handleLeaveGroup = (groupId: string) => {
-    const updatedGroups = groups.map((group) =>
-      group._id === groupId
-        ? {
-            ...group,
-            membersId: group.membersId.filter((id) => id !== user._id),
-          }
-        : group,
-    );
-    setGroups(updatedGroups);
-  };
-
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
         <h2 className="font-semibold">My Group Chat ({myGroupChats.length})</h2>
-        <button className="text-2xl cursor-pointer hover:text-gray-600">
+        <button
+          className="text-2xl cursor-pointer hover:text-gray-600"
+          onClick={async () => await createGroup(user._id, 'test_name')}
+        >
           +
         </button>
       </div>
@@ -40,13 +32,16 @@ export default function MyGroupChat({
         <div
           key={g._id}
           className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer"
-          onClick={() => setSelectedChat(g)}
+          onClick={() => {
+            setSelectedChat(g);
+            setNewRoom(g._id);
+          }}
         >
           <span>{g.name}</span>
           <button
-            onClick={(e) => {
+            onClick={async (e) => {
               e.stopPropagation();
-              handleLeaveGroup(g._id);
+              await leaveGroup(g._id, user._id);
             }}
             className="text-red-500 text-sm cursor-pointer"
           >
