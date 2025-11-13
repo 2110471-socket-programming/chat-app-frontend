@@ -1,7 +1,7 @@
 import { createGroup, leaveGroup } from '../api/group';
 import { useUser } from '../context/UserContext';
 import type { Chat } from '../interface/interface';
-
+import Members from '../component/members';
 type MyGroupChatType = {
   groups: Chat[];
   setSelectedChat: (groupChat: Chat) => void;
@@ -14,9 +14,7 @@ export default function MyGroupChat({
   setNewRoom,
 }: MyGroupChatType) {
   const { user } = useUser();
-
   const myGroupChats = groups.filter((g) => g.membersId.includes(user._id));
-
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -32,21 +30,28 @@ export default function MyGroupChat({
         <div
           key={g._id}
           className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer"
-          onClick={() => {
-            setSelectedChat(g);
-            setNewRoom(g._id);
-          }}
         >
-          <span>{g.name}</span>
-          <button
-            onClick={async (e) => {
-              e.stopPropagation();
-              await leaveGroup(g._id, user._id);
+          <span
+            className="w-full"
+            onClick={() => {
+              setSelectedChat(g);
+              setNewRoom(g._id);
             }}
-            className="text-red-500 text-sm cursor-pointer"
           >
-            Leave
-          </button>
+            {g.name}
+          </span>
+          <div className="flex gap-6">
+            <Members selectedGroup={g}/>
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                await leaveGroup(g._id, user._id);
+              }}
+              className="text-red-500 text-sm cursor-pointer"
+            >
+              Leave
+            </button>
+          </div>
         </div>
       ))}
     </div>
