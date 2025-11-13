@@ -40,7 +40,7 @@ export default function MyGroupChat({
           >
             {g.name}
           </span>
-          <div className="flex gap-6">
+          <div className="flex gap-2">
             <Members selectedGroup={g}/>
             <button
               onClick={async (e) => {

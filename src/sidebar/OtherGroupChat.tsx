@@ -23,7 +23,7 @@ export default function OtherGroupChat({ groups }: MyGroupChatType) {
           className="flex justify-between items-center p-2 hover:bg-gray-100 rounded-md"
         >
           <span>{g.name}</span>
-          <div className="flex gap-6">
+          <div className="flex gap-2">
             <Members selectedGroup={g}/>
           <button
             onClick={async () => await joinGroup(g._id, user._id)}
