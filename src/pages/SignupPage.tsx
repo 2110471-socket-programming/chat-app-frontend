@@ -41,7 +41,14 @@ function Signup() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const userData: UserRequest = { name, password, profileUrl };
+    const userData: UserRequest = {
+      name,
+      password,
+      profileUrl:
+        profileUrl === ''
+          ? 'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2558760599.jpg'
+          : profileUrl,
+    };
     console.log('signup payload:', userData);
 
     mutation.mutate(userData);
