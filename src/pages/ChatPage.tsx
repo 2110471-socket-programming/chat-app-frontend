@@ -130,7 +130,11 @@ export default function App() {
           {selectedChat ? (
             <>
               <ChatHeader selectedChat={selectedChat} clients={clients} />
-              <ChatMessage chatId={selectedChat._id} type={selectedChat.type} />
+              <ChatMessage
+                chatId={selectedChat._id}
+                type={selectedChat.type}
+                clients={clients}
+              />
             </>
           ) : (
             <div className="flex items-center justify-center flex-1 text-gray-400">

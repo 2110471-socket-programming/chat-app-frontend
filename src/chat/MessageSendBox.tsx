@@ -45,6 +45,21 @@ export default function MessageSendBox({ sendNewMessage }: MessageSendBoxType) {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Type your message..."
           className="flex-1 border border-gray-200 p-2 rounded-md"
+          onKeyDown={async (e) => {
+            if (e.key === 'Enter') {
+              if (newMessage) {
+                sendNewMessage('text', newMessage);
+                setNewMessage('');
+              }
+              if (file) {
+                setIsUploading(true);
+                const fileUrl = await uploadImage(file);
+                sendNewMessage('image', fileUrl);
+                setIsUploading(false);
+                setFile(null);
+              }
+            }
+          }}
         />
         <button
           disabled={isUploading}
