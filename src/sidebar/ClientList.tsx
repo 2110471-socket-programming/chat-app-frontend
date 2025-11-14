@@ -19,7 +19,7 @@ export default function ClientList({
   setNewRoom,
   setSelectedChat,
 }: ClientListType) {
-  const user = useUser();
+  const { user } = useUser();
   const [onlineClientsId, setOnlineClientsId] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
