@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { signout } from '../api/user';
 import { useUser } from '../context/UserContext';
-import { MessageSquare, LogOut, Home } from 'lucide-react';
+import { LogOut, Home } from 'lucide-react';
 import { socket } from '../config/config';
 
 function Header() {
@@ -41,14 +41,6 @@ function Header() {
 
       {/* Right-side buttons */}
       <div className="flex gap-4 items-center">
-        <button
-          onClick={() => navigate('/chat')}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-400 hover:bg-blue-300 text-white rounded-lg transition"
-        >
-          <MessageSquare className="w-5 h-5" />
-          Chat
-        </button>
-
         <button
           onClick={handleSignout}
           disabled={signoutMutation.isPending}

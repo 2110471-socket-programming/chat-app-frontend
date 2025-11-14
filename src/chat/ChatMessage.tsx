@@ -71,14 +71,14 @@ export default function ChatMessage({ chatId, type }: ChatMessageType) {
               key={i}
               className={`flex ${msg.senderName === user.name ? 'justify-end' : 'justify-start'}`}
             >
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-2 rounded-lg max-w-md break-words ${
-                msg.senderName === user.name
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200'
-              }`}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`p-2 rounded-lg max-w-md break-words ${
+                  msg.senderName === user.name
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200'
+                }`}
               >
                 <p className="text-xs opacity-70">
                   {msg.senderId !== user._id && msg.senderName}

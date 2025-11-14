@@ -4,7 +4,7 @@ import type { Chat } from '../interface/interface';
 
 type MyGroupChatType = {
   groups: Chat[];
-  setSelectedChat: (groupChat: Chat) => void;
+  setSelectedChat: (groupChat: Chat | null) => void;
   setNewRoom: (room: string) => void;
 };
 
@@ -41,6 +41,7 @@ export default function MyGroupChat({
           <button
             onClick={async (e) => {
               e.stopPropagation();
+              setSelectedChat(null);
               await leaveGroup(g._id, user._id);
             }}
             className="text-red-500 text-sm cursor-pointer"
