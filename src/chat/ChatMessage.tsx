@@ -24,6 +24,7 @@ export default function ChatMessage({
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { user } = useUser();
+
   useEffect(() => {
     setIsLoading(true);
     (async () => {
@@ -34,7 +35,7 @@ export default function ChatMessage({
       }
       setIsLoading(false);
     })();
-  }, [chatId]);
+  }, [chatId, type]);
 
   useEffect(() => {
     const handleReceiveMessage = (newMessage: ChatHistory) => {

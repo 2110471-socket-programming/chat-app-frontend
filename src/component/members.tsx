@@ -1,5 +1,4 @@
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import Button from '@mui/material/Button';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -12,6 +11,7 @@ import React from 'react';
 import Paper, { type PaperProps } from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+
 type MembersProps = {
   selectedGroup: Chat;
 };
@@ -31,16 +31,18 @@ function PaperComponent(props: PaperProps) {
 
 export default function Members({ selectedGroup }: MembersProps) {
   const [clients, setClients] = useState<User[] | null>([]);
-  const nodeRef = React.useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<boolean>(false);
+
   useEffect(() => {
     (async () => {
       setClients(await getClients());
     })();
   }, [clients]);
+
   const myClients = clients?.filter((c) =>
     selectedGroup.membersId.includes(c._id),
   );
+
   const handleClickOpen = () => {
     setOpen(true);
   };

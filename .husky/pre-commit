@@ -1,11 +1,11 @@
-# npm run lint
-# if [ $? -ne 0 ]; then
-#   echo "==================================================================="
-#   echo "❌ You can't push this code since Linting errors detected! ❌"
-#   echo "💡 Note: You can use \`npm run lint:fix\` if you're lazy to fix!"
-#   echo "==================================================================="
-#   exit 1
-# fi
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "==================================================================="
+  echo "❌ You can't push this code since Linting errors detected! ❌"
+  echo "💡 Note: You can use \`npm run lint:fix\` if you're lazy to fix!"
+  echo "==================================================================="
+  exit 1
+fi
 
 npm run format
 if [ $? -ne 0 ]; then

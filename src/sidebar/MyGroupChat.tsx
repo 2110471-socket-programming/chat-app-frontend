@@ -47,7 +47,7 @@ export default function MyGroupChat({
       setError('');
       setSelectedChat(newGroup);
       setNewRoom(newGroup._id);
-    } catch (error) {
+    } catch {
       setError('Failed to create group. Try again.');
     }
   };
