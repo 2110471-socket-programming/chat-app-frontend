@@ -35,9 +35,8 @@ function Signup() {
       setUser(newUser);
       navigate('/');
     },
-    onError: (error: any) => {
-      const message =
-        error.response?.data?.message || error.message || 'Signup failed';
+    onError: (error: Error) => {
+      const message = error.message || 'Signup failed';
       alert(`Signup failed: ${message}`);
     },
   });
@@ -59,7 +58,7 @@ function Signup() {
     if (profileFile) {
       try {
         profileUrl = await uploadImage(profileFile);
-      } catch (error) {
+      } catch {
         alert('Failed to upload profile picture');
         setIsUploading(false);
         return;

@@ -24,9 +24,8 @@ function Signin() {
       setUser({ _id: data._id, name: data.name, profileUrl: data.profileUrl }); // ✅ store in context
       navigate('/'); // redirect after signin
     },
-    onError: (error: any) => {
-      const message =
-        error.response?.data?.message || error.message || 'Signin failed';
+    onError: (error: Error) => {
+      const message = error.message || 'Signin failed';
       alert(`Signin failed: ${message}`);
     },
   });
