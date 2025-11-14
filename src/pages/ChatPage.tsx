@@ -121,7 +121,10 @@ export default function App() {
                 setSelectedChat={setSelectedChat}
                 setNewRoom={setNewRoom}
               />
-              <OtherGroupChat groups={groups} setGroups={setGroups} />
+              <OtherGroupChat
+                groups={groups}
+                setSelectedChat={setSelectedChat}
+              />
             </>
           )}
         </aside>

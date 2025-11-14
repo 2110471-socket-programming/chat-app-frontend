@@ -117,6 +117,7 @@ export default function MyGroupChat({
             <button
               onClick={async (e) => {
                 e.stopPropagation();
+                setSelectedChat(null);
                 await leaveGroup(g._id, user._id);
               }}
               className="text-red-500 text-sm cursor-pointer"

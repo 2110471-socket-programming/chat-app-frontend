@@ -5,10 +5,13 @@ import Members from '../component/members';
 
 type MyGroupChatType = {
   groups: Chat[];
-  setGroups: (groups: Chat[]) => void;
+  setSelectedChat: (groupChat: Chat) => void;
 };
 
-export default function OtherGroupChat({ groups }: MyGroupChatType) {
+export default function OtherGroupChat({
+  groups,
+  setSelectedChat,
+}: MyGroupChatType) {
   const { user } = useUser();
 
   const otherGroupChats = groups.filter((g) => !g.membersId.includes(user._id));
@@ -27,7 +30,10 @@ export default function OtherGroupChat({ groups }: MyGroupChatType) {
           <div className="flex gap-2">
             <Members selectedGroup={g} />
             <button
-              onClick={async () => await joinGroup(g._id, user._id)}
+              onClick={async () => {
+                setSelectedChat(g);
+                await joinGroup(g._id, user._id);
+              }}
               className="text-blue-500 text-sm cursor-pointer"
             >
               Join
