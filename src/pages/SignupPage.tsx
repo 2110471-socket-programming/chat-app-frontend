@@ -3,7 +3,6 @@ import { type UserRequest, signup } from '../api/user';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import { socket } from '../config/config';
 
 function Signup() {
   const { user, setUser } = useUser();

@@ -21,7 +21,7 @@ function getFriendId(userId: string, chatId: string): string | null {
 
 export default function ChatHeader({ selectedChat, clients }: ChatHeaderType) {
   const { user } = useUser();
-  
+
   return (
     <div className="border-b border-gray-200 pb-2 mb-2">
       <h2 className="text-xl font-semibold">

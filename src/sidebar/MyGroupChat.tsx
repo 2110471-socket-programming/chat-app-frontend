@@ -15,7 +15,7 @@ export default function MyGroupChat({
   setSelectedChat,
   setNewRoom,
 }: MyGroupChatType) {
-  const [flag, setFlag] = useState(false); 
+  const [flag, setFlag] = useState(false);
   const [groupName, setGroupName] = useState('');
   const [error, setError] = useState('');
   const { user } = useUser();

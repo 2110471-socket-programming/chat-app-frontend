@@ -8,22 +8,42 @@ import {
 } from '../api/chat';
 import MessageSendBox from './MessageSendBox';
 import { socket } from '../config/config';
-
+import { useRef } from 'react';
 type ChatMessageType = {
   chatId: string;
   type: 'private' | 'group';
   clients: User[];
 };
 
-export default function ChatMessage(
-  { chatId, type, clients }: ChatMessageType
-) {
+export default function ChatMessage({
+  chatId,
+  type,
+  clients,
+}: ChatMessageType) {
   const [messages, setMessages] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const endRef = useRef<HTMLDivElement | null>(null);
+  const [typing, setTyping] = useState<boolean>(false);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
   const { user } = useUser();
   useEffect(() => {
+    if (typing) socket.emit('typing', chatId, user._id);
+    else socket.emit('stopTyping', chatId, user._id);
+    const interval = setInterval(() => {
+      if (typing) socket.emit('typing', chatId, user._id);
+      else socket.emit('stopTyping', chatId, user._id);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [typing, chatId]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView();
+  }, [messages, typingUsers]);
+
+  useEffect(() => {
     setIsLoading(true);
+    setTypingUsers([]);
     (async () => {
       if (type === 'private') {
         setMessages(await getPrivateChatHistoryById(chatId));
@@ -32,17 +52,35 @@ export default function ChatMessage(
       }
       setIsLoading(false);
     })();
+    return () => {
+      socket.emit('stopTyping', chatId, user._id);
+    };
   }, [chatId]);
 
   useEffect(() => {
     const handleReceiveMessage = (newMessage: ChatHistory) => {
       setMessages((messages) => [...messages, newMessage]);
     };
-
+    const handleTyping = (fromChatId: string, userId: string) => {
+      if (fromChatId === chatId) {
+        setTypingUsers((prev) => {
+          if (!prev.includes(userId)) return [...prev, userId];
+          return prev;
+        });
+      }
+    };
+    const handleStopTyping = (fromChatId: string, userId: string) => {
+      if (fromChatId === chatId) {
+        setTypingUsers((prev) => prev.filter((id) => id !== userId));
+      }
+    };
     socket.on('receive_message', handleReceiveMessage);
-
+    socket.on('typing', handleTyping);
+    socket.on('stopTyping', handleStopTyping);
     return () => {
       socket.off('receive_message', handleReceiveMessage);
+      socket.off('typing', handleTyping);
+      socket.off('stopTyping', handleStopTyping);
     };
   }, []);
 
@@ -56,7 +94,6 @@ export default function ChatMessage(
     };
 
     socket.emit('send_message', newMessage, chatId);
-
     setMessages((messages) => {
       return [...messages, newMessage];
     });
@@ -81,7 +118,10 @@ export default function ChatMessage(
                 >
                   {msg.senderName !== user.name && (
                     <img
-                      src={profileUrl}
+                      src={
+                        profileUrl ||
+                        'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2558760599.jpg'
+                      }
                       alt="pfp"
                       className="w-8 h-8 rounded-full me-5 border-1 border-gray-300"
                     />
@@ -128,8 +168,25 @@ export default function ChatMessage(
             })}
           </>
         )}
+        <div>
+          {typingUsers.length > 0 &&
+            typingUsers.map((user) => (
+              <div className="flex gap-1 items-center">
+                <img
+                  src={
+                    userMap[user].profileUrl ||
+                    'https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2558760599.jpg'
+                  }
+                  alt="pfp"
+                  className="w-4 h-4 rounded-full me-5 border-1 border-gray-300"
+                />
+                <p key={user}>{userMap[user].name} กำลังพิมพ์...</p>
+              </div>
+            ))}
+        </div>
+        <div ref={endRef}></div>
       </div>
-      <MessageSendBox sendNewMessage={sendNewMessage} />
+      <MessageSendBox sendNewMessage={sendNewMessage} setTyping={setTyping} />
     </>
   );
 }

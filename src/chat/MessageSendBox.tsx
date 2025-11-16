@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { uploadImage } from '../api/upload';
-
 type MessageSendBoxType = {
   sendNewMessage: (type: 'text' | 'image', content: string) => void;
+  setTyping: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-export default function MessageSendBox({ sendNewMessage }: MessageSendBoxType) {
+export default function MessageSendBox({
+  sendNewMessage,
+  setTyping,
+}: MessageSendBoxType) {
   const [newMessage, setNewMessage] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-
   return (
     <>
       {file && (
@@ -42,12 +43,16 @@ export default function MessageSendBox({ sendNewMessage }: MessageSendBoxType) {
         </label>
         <input
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          onChange={(e) => {
+            setNewMessage(e.target.value);
+            setTyping(e.target.value.length !== 0);
+          }}
           placeholder="Type your message..."
           className="flex-1 border border-gray-200 p-2 rounded-md"
           onKeyDown={async (e) => {
             if (e.key === 'Enter') {
               if (newMessage) {
+                setTyping(false);
                 sendNewMessage('text', newMessage);
                 setNewMessage('');
               }
@@ -65,6 +70,7 @@ export default function MessageSendBox({ sendNewMessage }: MessageSendBoxType) {
           disabled={isUploading}
           onClick={async () => {
             if (newMessage) {
+              setTyping(false);
               sendNewMessage('text', newMessage);
               setNewMessage('');
             }

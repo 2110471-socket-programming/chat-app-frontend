@@ -24,7 +24,7 @@ function PaperComponent(props: PaperProps) {
       handle="#draggable-dialog-title"
       cancel={'[class*="MuiDialogContent-root"], [class*="close-button"]'}
     >
-      <Paper {...props} ref={nodeRef} className="min-w-[400px]"/>
+      <Paper {...props} ref={nodeRef} className="min-w-[400px]" />
     </Draggable>
   );
 }

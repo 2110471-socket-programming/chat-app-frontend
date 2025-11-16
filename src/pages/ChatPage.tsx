@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Chat, User } from '../interface/interface';
 import { useUser } from '../context/UserContext';
@@ -21,7 +21,10 @@ export default function App() {
   const [sidebarIsLoading, setSidebarIsLoading] = useState<boolean>(true);
 
   const navigate = useNavigate();
-
+  const endRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
   const handleNewGroup = (newGroup: Chat) => {
     setGroups((groups) => [...groups, newGroup]);
   };
@@ -130,7 +133,11 @@ export default function App() {
           {selectedChat ? (
             <>
               <ChatHeader selectedChat={selectedChat} clients={clients} />
-              <ChatMessage chatId={selectedChat._id} type={selectedChat.type} clients={clients} />
+              <ChatMessage
+                chatId={selectedChat._id}
+                type={selectedChat.type}
+                clients={clients}
+              />
             </>
           ) : (
             <div className="flex items-center justify-center flex-1 text-gray-400">
