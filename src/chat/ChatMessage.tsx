@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import type { ChatHistory, User } from '../interface/interface';
 import { useUser } from '../context/UserContext';
@@ -22,8 +22,8 @@ export default function ChatMessage({
 }: ChatMessageType) {
   const [messages, setMessages] = useState<ChatHistory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const { user } = useUser();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -48,6 +48,10 @@ export default function ChatMessage({
       socket.off('receive_message', handleReceiveMessage);
     };
   }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+  }, [messages]);
 
   function sendNewMessage(type: 'text' | 'image', content: string) {
     const newMessage: ChatHistory = {
@@ -131,6 +135,7 @@ export default function ChatMessage({
                 </div>
               );
             })}
+            <div ref={messagesEndRef} />
           </>
         )}
       </div>
